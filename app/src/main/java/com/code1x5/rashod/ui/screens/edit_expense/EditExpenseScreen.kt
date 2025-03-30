@@ -6,6 +6,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -65,7 +66,7 @@ fun EditExpenseScreen(
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Назад"
                         )
                     }
@@ -107,7 +108,6 @@ fun EditExpenseScreen(
                     onAmountChange = viewModel::updateAmount,
                     onCategoryChange = viewModel::updateCategory,
                     onNotesChange = viewModel::updateNotes,
-                    onDateChange = viewModel::updateDate,
                     isEditMode = isEditMode,
                     error = error,
                     onDeleteClick = {
@@ -129,7 +129,6 @@ private fun ExpenseForm(
     onAmountChange: (String) -> Unit,
     onCategoryChange: (ExpenseCategory) -> Unit,
     onNotesChange: (String) -> Unit,
-    onDateChange: (LocalDate) -> Unit,
     isEditMode: Boolean,
     error: String?,
     onDeleteClick: () -> Unit
@@ -165,7 +164,7 @@ private fun ExpenseForm(
             isError = state.titleError != null,
             supportingText = {
                 if (state.titleError != null) {
-                    Text(state.titleError ?: "")
+                    Text(state.titleError)
                 }
             }
         )
@@ -223,7 +222,7 @@ private fun ExpenseForm(
             isError = state.amountError != null,
             supportingText = {
                 if (state.amountError != null) {
-                    Text(state.amountError ?: "")
+                    Text(state.amountError)
                 }
             }
         )

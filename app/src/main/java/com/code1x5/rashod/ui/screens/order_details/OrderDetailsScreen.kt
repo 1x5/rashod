@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -77,7 +78,7 @@ fun OrderDetailsScreen(
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Назад"
                         )
                     }
@@ -239,7 +240,7 @@ private fun OrderDetailsContent(
                             else -> MaterialTheme.colorScheme.onSurface
                         }
                         
-                        Divider(modifier = Modifier.padding(vertical = 8.dp))
+                        HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
                         
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -286,7 +287,7 @@ private fun OrderDetailsContent(
                     elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                 ) {
                     Text(
-                        text = order.notes ?: "",
+                        text = order.notes.orEmpty(),
                         style = MaterialTheme.typography.bodyLarge,
                         modifier = Modifier.padding(16.dp)
                     )
@@ -379,8 +380,8 @@ private fun PhotoItem(
     photoPath: String,
     modifier: Modifier = Modifier
 ) {
-    // В реальном приложении здесь бы отображалась фотография
-    // Для простоты примера, использую заглушку
+    // В реальном приложении здесь бы отображалась фотография из пути photoPath
+    // Для простоты примера, используем заглушку
     Box(
         modifier = modifier
             .size(120.dp, 120.dp)
@@ -388,12 +389,28 @@ private fun PhotoItem(
             .background(MaterialTheme.colorScheme.secondaryContainer),
         contentAlignment = Alignment.Center
     ) {
-        Icon(
-            imageVector = Icons.Default.Image,
-            contentDescription = null,
-            modifier = Modifier.size(48.dp),
-            tint = MaterialTheme.colorScheme.onSecondaryContainer
-        )
+        // Для отладки показываем имя файла без полного пути
+        val fileName = photoPath.substringAfterLast('/', "image")
+        
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(
+                imageVector = Icons.Default.Image,
+                contentDescription = null,
+                modifier = Modifier.size(48.dp),
+                tint = MaterialTheme.colorScheme.onSecondaryContainer
+            )
+            
+            // Отображаем имя файла
+            Text(
+                text = fileName,
+                style = MaterialTheme.typography.bodySmall,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                color = MaterialTheme.colorScheme.onSecondaryContainer
+            )
+        }
     }
 }
 

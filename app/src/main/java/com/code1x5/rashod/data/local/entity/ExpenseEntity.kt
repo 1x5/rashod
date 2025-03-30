@@ -3,6 +3,7 @@ package com.code1x5.rashod.data.local.entity
 import android.util.Log
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.code1x5.rashod.domain.model.Expense
 import com.code1x5.rashod.domain.model.ExpenseCategory
@@ -20,7 +21,8 @@ import java.time.LocalDate
             childColumns = ["orderId"],
             onDelete = ForeignKey.CASCADE
         )
-    ]
+    ],
+    indices = [Index("orderId")] // Индекс для внешнего ключа для оптимизации запросов
 )
 data class ExpenseEntity(
     @PrimaryKey

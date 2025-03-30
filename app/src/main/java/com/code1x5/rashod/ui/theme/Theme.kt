@@ -63,7 +63,13 @@ fun RashodTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
+            
+            // Современный подход с подавлением предупреждения
+            // Цвет статус-бара всё еще можно устанавливать, но метод отмечен как устаревший
+            @Suppress("DEPRECATION")
             window.statusBarColor = colorScheme.primary.toArgb()
+            
+            // Настраиваем появление статус-бара
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
         }
     }

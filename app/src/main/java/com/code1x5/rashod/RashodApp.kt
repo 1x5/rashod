@@ -5,8 +5,9 @@ import android.content.Context
 import android.os.Process
 import android.util.Log
 import dagger.hilt.android.HiltAndroidApp
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.PrintWriter
@@ -24,6 +25,10 @@ class RashodApp : Application() {
         private const val TAG = "RashodApp"
         private const val MAX_CRASH_LOGS = 5
     }
+    
+    // Создаем отдельную область корутин для приложения с SupervisorJob
+    // чтобы ошибка в одной корутине не отменяла все остальные
+    private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     override fun onCreate() {
         super.onCreate()
@@ -86,7 +91,8 @@ class RashodApp : Application() {
     }
     
     private fun cleanOldCrashLogs() {
-        GlobalScope.launch(Dispatchers.IO) {
+        // Используем созданную нами область корутин вместо GlobalScope
+        applicationScope.launch(Dispatchers.IO) {
             try {
                 val crashDir = File(filesDir, "crash_logs")
                 if (crashDir.exists()) {

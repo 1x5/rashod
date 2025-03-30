@@ -6,6 +6,7 @@ import com.code1x5.rashod.data.repository.OrderRepository
 import com.code1x5.rashod.domain.model.Order
 import com.code1x5.rashod.domain.model.OrderStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,13 +18,14 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
  * ViewModel для экрана списка заказов
  */
-@OptIn(FlowPreview::class)
+@OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class OrdersViewModel @Inject constructor(
     private val orderRepository: OrderRepository
@@ -39,12 +41,16 @@ class OrdersViewModel @Inject constructor(
     private val _selectedStatus = MutableStateFlow<OrderStatus?>(null)
     val selectedStatus: StateFlow<OrderStatus?> = _selectedStatus
     
+    // Состояние для отображения меню фильтров
+    private val _isFilterMenuOpen = MutableStateFlow(false)
+    val isFilterMenuOpen: StateFlow<Boolean> = _isFilterMenuOpen
+    
     // События навигации
     private val _events = MutableSharedFlow<UiEvent>()
     val events = _events.asSharedFlow()
     
     // Отфильтрованный список заказов
-    @OptIn(FlowPreview::class)
+    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     val orders = combine(
         _searchText.debounce(300).distinctUntilChanged(),
         _selectedStatus
@@ -59,7 +65,7 @@ class OrdersViewModel @Inject constructor(
             searchQuery.isBlank() -> {
                 // Если есть только фильтр по статусу
                 orderRepository.getAllOrders().flatMapLatest { orders ->
-                    kotlinx.coroutines.flow.flow {
+                    flow {
                         emit(orders.filter { it.status == status })
                     }
                 }
@@ -71,7 +77,7 @@ class OrdersViewModel @Inject constructor(
             else -> {
                 // Если есть и поиск, и фильтр
                 orderRepository.searchOrders(searchQuery).flatMapLatest { orders ->
-                    kotlinx.coroutines.flow.flow {
+                    flow {
                         emit(orders.filter { it.status == status })
                     }
                 }
@@ -99,6 +105,18 @@ class OrdersViewModel @Inject constructor(
     
     fun onStatusFilterChange(status: OrderStatus?) {
         _selectedStatus.value = status
+        // Закрываем меню фильтров после выбора
+        _isFilterMenuOpen.value = false
+    }
+    
+    // Переключаем состояние меню фильтров
+    fun onToggleFilterMenu() {
+        _isFilterMenuOpen.value = !_isFilterMenuOpen.value
+    }
+    
+    // Закрываем меню фильтров
+    fun onCloseFilterMenu() {
+        _isFilterMenuOpen.value = false
     }
     
     /**

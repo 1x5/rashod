@@ -5,6 +5,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -60,7 +61,7 @@ fun EditOrderScreen(
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Назад"
                         )
                     }
@@ -103,7 +104,6 @@ fun EditOrderScreen(
                     onIncomeChange = viewModel::updateIncome,
                     onNotesChange = viewModel::updateNotes,
                     onStatusChange = viewModel::updateStatus,
-                    onDateChange = viewModel::updateDate,
                     isEditMode = isEditMode,
                     error = error
                 )
@@ -122,7 +122,6 @@ private fun OrderForm(
     onIncomeChange: (String) -> Unit,
     onNotesChange: (String) -> Unit,
     onStatusChange: (OrderStatus) -> Unit,
-    onDateChange: (LocalDate) -> Unit,
     isEditMode: Boolean,
     error: String?
 ) {
@@ -157,7 +156,7 @@ private fun OrderForm(
             isError = state.titleError != null,
             supportingText = {
                 if (state.titleError != null) {
-                    Text(state.titleError ?: "")
+                    Text(state.titleError)
                 }
             }
         )
@@ -172,7 +171,7 @@ private fun OrderForm(
             isError = state.clientError != null,
             supportingText = {
                 if (state.clientError != null) {
-                    Text(state.clientError ?: "")
+                    Text(state.clientError)
                 }
             }
         )
@@ -238,7 +237,7 @@ private fun OrderForm(
             isError = state.amountError != null,
             supportingText = {
                 if (state.amountError != null) {
-                    Text(state.amountError ?: "")
+                    Text(state.amountError)
                 }
             }
         )

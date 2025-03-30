@@ -91,7 +91,7 @@ fun OrderItem(
                 )
             }
             
-            Divider()
+            HorizontalDivider()
             
             // Финансовая информация
             Row(
