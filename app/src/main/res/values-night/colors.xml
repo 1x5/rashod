@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#4f83cc</color>
-    <color name="primary_dark">#01579B</color>
-    <color name="primary_light">#84b2ff</color>
-    <color name="secondary">#58a5f0</color>
-    <color name="secondary_dark">#0277BD</color>
-    <color name="secondary_light">#8ed5ff</color>
-    <color name="error">#CF6679</color>
+    <color name="primary">#8A56FF</color>
+    <color name="primary_dark">#5900C8</color>
+    <color name="primary_light">#D0BCFF</color>
+    <color name="secondary">#4BEA67</color>
+    <color name="secondary_dark">#008F45</color>
+    <color name="secondary_light">#A4FFB8</color>
+    <color name="tertiary">#FFBB0D</color>
+    <color name="error">#FF5757</color>
     <color name="background">#121212</color>
-    <color name="surface">#121212</color>
+    <color name="surface">#1E1E1E</color>
     <color name="on_primary">#000000</color>
     <color name="on_secondary">#000000</color>
     <color name="on_background">#FFFFFF</color>
     <color name="on_surface">#FFFFFF</color>
     <color name="on_error">#000000</color>
-    <color name="green">#81C784</color>
-    <color name="red">#E57373</color>
+    <color name="accent">#8A56FF</color>
+    <color name="green">#4BEA67</color>
+    <color name="red">#FF5757</color>
+    <color name="yellow">#FFBB0D</color>
+    <color name="card_background">#212121</color>
 </resources> 

@@ -16,9 +16,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.code1x5.rashod.domain.model.Order
 import com.code1x5.rashod.domain.model.OrderStatus
-import com.code1x5.rashod.ui.theme.DarkGreen
-import com.code1x5.rashod.ui.theme.Green
-import com.code1x5.rashod.ui.theme.Red
+import com.code1x5.rashod.ui.theme.*
 import java.text.NumberFormat
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -120,8 +118,8 @@ fun OrderItem(
                         )
                         
                         val profitColor = when {
-                            order.profit > 0 -> Green
-                            order.profit < 0 -> Red
+                            order.profit > 0 -> AccentPositive
+                            order.profit < 0 -> AccentNegative
                             else -> MaterialTheme.colorScheme.onSurface
                         }
                         
@@ -158,9 +156,9 @@ fun StatusChip(
     modifier: Modifier = Modifier
 ) {
     val (backgroundColor, textColor) = when (status) {
-        OrderStatus.PLANNED -> Pair(MaterialTheme.colorScheme.secondaryContainer, MaterialTheme.colorScheme.onSecondaryContainer)
-        OrderStatus.ACTIVE -> Pair(MaterialTheme.colorScheme.primaryContainer, MaterialTheme.colorScheme.onPrimaryContainer)
-        OrderStatus.COMPLETED -> Pair(DarkGreen.copy(alpha = 0.1f), DarkGreen)
+        OrderStatus.PLANNED -> Pair(StatusPlanned.copy(alpha = 0.1f), StatusPlanned)
+        OrderStatus.ACTIVE -> Pair(StatusActive.copy(alpha = 0.1f), StatusActive)
+        OrderStatus.COMPLETED -> Pair(Purple.copy(alpha = 0.1f), Purple)
     }
     
     val statusText = when (status) {

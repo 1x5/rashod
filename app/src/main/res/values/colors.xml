@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#01579B</color>
-    <color name="primary_dark">#002f6c</color>
-    <color name="primary_light">#4f83cc</color>
-    <color name="secondary">#0277BD</color>
-    <color name="secondary_dark">#004c8c</color>
-    <color name="secondary_light">#58a5f0</color>
-    <color name="error">#B00020</color>
-    <color name="background">#FFFFFF</color>
+    <color name="primary">#5900C8</color>
+    <color name="primary_dark">#3C007E</color>
+    <color name="primary_light">#8A56FF</color>
+    <color name="secondary">#4BEA67</color>
+    <color name="secondary_dark">#008F45</color>
+    <color name="secondary_light">#77FF93</color>
+    <color name="tertiary">#FFBB0D</color>
+    <color name="error">#FF5757</color>
+    <color name="background">#F7F7F7</color>
     <color name="surface">#FFFFFF</color>
     <color name="on_primary">#FFFFFF</color>
-    <color name="on_secondary">#FFFFFF</color>
+    <color name="on_secondary">#000000</color>
     <color name="on_background">#000000</color>
     <color name="on_surface">#000000</color>
     <color name="on_error">#FFFFFF</color>
-    <color name="green">#4CAF50</color>
-    <color name="red">#F44336</color>
+    <color name="accent">#8A56FF</color>
+    <color name="green">#4BEA67</color>
+    <color name="red">#FF5757</color>
+    <color name="yellow">#FFBB0D</color>
+    <color name="card_background">#FFFFFF</color>
 </resources>
