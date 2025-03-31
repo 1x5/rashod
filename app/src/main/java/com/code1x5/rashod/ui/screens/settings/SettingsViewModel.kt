@@ -2,11 +2,14 @@ package com.code1x5.rashod.ui.screens.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.code1x5.rashod.data.repository.ThemeRepository
 import com.code1x5.rashod.domain.model.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -16,6 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     // TODO: Добавить UserRepository для работы с данными пользователя
+    private val themeRepository: ThemeRepository
 ) : ViewModel() {
     
     // Данные пользователя
@@ -37,9 +41,13 @@ class SettingsViewModel @Inject constructor(
     private val _password = MutableStateFlow("")
     val password: StateFlow<String> = _password.asStateFlow()
     
-    // Текущая тема приложения (для примера)
-    private val _isDarkTheme = MutableStateFlow(false)
-    val isDarkTheme: StateFlow<Boolean> = _isDarkTheme.asStateFlow()
+    // Текущая тема приложения (получаем из репозитория)
+    val isDarkTheme: StateFlow<Boolean> = themeRepository.isDarkTheme()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = false
+        )
     
     init {
         // Здесь бы загружали данные пользователя из репозитория
@@ -118,6 +126,9 @@ class SettingsViewModel @Inject constructor(
      * Переключение темы
      */
     fun toggleTheme() {
-        _isDarkTheme.value = !_isDarkTheme.value
+        viewModelScope.launch {
+            val currentTheme = isDarkTheme.value
+            themeRepository.setDarkTheme(!currentTheme)
+        }
     }
 } 

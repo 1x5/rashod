@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -14,6 +15,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,94 +35,53 @@ private const val TAG = "MainActivity"
  */
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    
+    private val viewModel: MainViewModel by viewModels()
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
-        // Заворачиваем только вызов setContent, но не внутреннюю логику
-        runCatching {
-            Log.i(TAG, "Инициализация MainActivity")
-            setContent {
-                SafeAppContent()
-            }
-        }.onFailure { e ->
-            Log.e(TAG, "Критическая ошибка при инициализации MainActivity: ${e.message}", e)
-            // Создаем упрощенный контент при ошибке
-            setContent {
-                ErrorScreen("Произошла ошибка при запуске приложения")
-            }
-        }
-    }
-    
-    @Composable
-    private fun SafeAppContent() {
-        var isReady by remember { mutableStateOf(false) }
-        var hasInitError by remember { mutableStateOf(false) }
-        
-        // Задержка для стабилизации
-        LaunchedEffect(key1 = true) {
-            try {
-                delay(300)
-                isReady = true
-            } catch (e: Exception) {
-                Log.e(TAG, "Ошибка при инициализации: ${e.message}", e)
-                hasInitError = true
-            }
-        }
-        
-        when {
-            !isReady && !hasInitError -> {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
-                }
-            }
-            hasInitError -> {
-                ErrorScreen("Не удалось запустить приложение")
-            }
-            else -> {
-                MainContent()
-            }
-        }
-    }
-    
-    @Composable
-    private fun MainContent() {
-        // Используем отслеживаемое состояние для обработки ошибок
-        var error by remember { mutableStateOf<String?>(null) }
-        
-        // Реагируем на ошибки во время выполнения
-        if (error != null) {
-            ErrorScreen(error!!)
-            return
-        }
-        
-        RashodTheme {
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-                color = MaterialTheme.colorScheme.background
-            ) {
-                val navController = rememberNavController()
-                
-                Scaffold { paddingValues ->
-                    RashodNavHost(
-                        navController = navController,
-                        modifier = Modifier.padding(paddingValues),
-                        onError = { errorMessage ->
-                            error = errorMessage
-                            Log.e(TAG, "Ошибка в навигационном хосте: $errorMessage")
+        setContent {
+            val isLoading by remember { mutableStateOf(false) }
+            val error by remember { mutableStateOf<String?>(null) }
+            val isDarkTheme by viewModel.isDarkTheme.collectAsState()
+            
+            RashodTheme(darkTheme = isDarkTheme) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    if (isLoading) {
+                        // Показываем индикатор загрузки
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
                         }
-                    )
+                    } else if (error != null) {
+                        // Показываем ошибку
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "Произошла ошибка: $error",
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        }
+                    } else {
+                        // Основная навигация
+                        val navController = rememberNavController()
+                        RashodNavHost(
+                            navController = navController,
+                            onError = { errorMessage ->
+                                Log.e(TAG, "Ошибка навигации: $errorMessage")
+                            }
+                        )
+                    }
                 }
             }
-        }
-    }
-    
-    @Composable
-    private fun ErrorScreen(message: String) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text(
-                text = message,
-                color = MaterialTheme.colorScheme.error
-            )
         }
     }
 }
